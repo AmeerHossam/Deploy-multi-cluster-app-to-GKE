@@ -15,7 +15,7 @@ jobs:
       - name: Test
         run: |-
           docker build -t sudo1amir/react-test -f ./client/Dockerfile.dev ./client/
-          docker run -e CI=true rallycoding/react-test npm test
+          docker run -e CI=true sudo1amir/react-test npm test
       - name: Build
         run: |-
           docker build -t sudo1amir/multi-client-k8s:latest -t sudo1amir/multi-client-k8s:${{ env.SHA }} -f ./client/Dockerfile ./client

@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      
 
 
       - name: Login to Docker Hub
@@ -18,20 +18,24 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
-
-      - name: Test
-        run: |-
-          docker build -t sudo1amir/react-test -f ./client/Dockerfile.dev ./client/
-          docker run -e CI=true sudo1amir/react-test npm test
+          
       - name: Build
+        uses: actions/checkout@v3
         run: |-
           docker build -t sudo1amir/multi-client-k8s:latest -t sudo1amir/multi-client-k8s:${{ env.SHA }} -f ./client/Dockerfile ./client
           docker build -t sudo1amir/multi-server-k8s:latest -t sudo1amir/multi-server-k8s:${{ env.SHA }} -f ./server/Dockerfile ./server
           docker build -t sudo1amir/multi-worker-k8s:latest -t sudo1amir/multi-worker-k8s:${{ env.SHA }} -f ./worker/Dockerfile ./worker
 
+      - name: Test
+        uses: actions/checkout@v3
+        run: |-
+          docker build -t sudo1amir/react-test -f ./client/Dockerfile.dev ./client/
+          docker run -e CI=true sudo1amir/react-test npm test
+
 
 
       - name: Push
+        uses: actions/checkout@v3
         run: |-
         
           docker push sudo1amir/multi-client-k8s:latest

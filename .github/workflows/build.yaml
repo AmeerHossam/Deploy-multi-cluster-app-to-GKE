@@ -16,7 +16,7 @@ jobs:
 
       - name: Login to Docker Hub
         run: | # log into docker hub account
-          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD 
+          docker login -u sudo1amir -p ${{secrets.DOCKER_TOKEN}}
 
       - name: Test
         run: |-

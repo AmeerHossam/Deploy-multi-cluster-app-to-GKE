@@ -14,7 +14,7 @@ jobs:
 
       - name: Test
         run: |-
-          docker login -u ${{ env.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ env.DOCKER_USERNAME }} --password-stdin
           docker build -t sudo1amir/react-test -f ./client/Dockerfile.dev ./client/
           docker run -e CI=true rallycoding/react-test npm test
 

@@ -21,20 +21,18 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Test
-        run: |-
+        run: |
           docker build -t sudo1amir/react-test -f ./client/Dockerfile.dev ./client/
           docker run -e CI=true sudo1amir/react-test npm test
+
       - name: Build
-        run: |-
+        run: |
           docker build -t sudo1amir/multi-client-k8s:latest -t sudo1amir/multi-client-k8s:${{ env.SHA }} -f ./client/Dockerfile ./client
           docker build -t sudo1amir/multi-server-k8s:latest -t sudo1amir/multi-server-k8s:${{ env.SHA }} -f ./server/Dockerfile ./server
           docker build -t sudo1amir/multi-worker-k8s:latest -t sudo1amir/multi-worker-k8s:${{ env.SHA }} -f ./worker/Dockerfile ./worker
 
-
-
       - name: Push
-        run: |-
-        
+        run: |
           docker push sudo1amir/multi-client-k8s:latest
           docker push sudo1amir/multi-server-k8s:latest
           docker push sudo1amir/multi-worker-k8s:latest

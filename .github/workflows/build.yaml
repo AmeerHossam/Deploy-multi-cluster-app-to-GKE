@@ -16,7 +16,7 @@ jobs:
 
       - name: Login to Docker Hub
         run: | # log into docker hub account
-          echo ${{ secrets.DOCKER_TOKEN }} | docker login -u sudo1amir --password-stdin
+          docker login -u sudo1amir -p ${{secrets.DOCKER_PASSWORD}}
 
       - name: Test
         run: |-

@@ -22,7 +22,7 @@ jobs:
       - 
         name: Test
         run: |-
-          docker build -t sudo1amir/react-test -f ./client/Dockerfile.dev ../../client/
+          docker build -t sudo1amir/react-test -f ./client/Dockerfile.dev ./client
           docker run -e CI=true sudo1amir/react-test npm test
           
       - name: Build

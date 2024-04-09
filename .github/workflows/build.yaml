@@ -4,9 +4,15 @@ on:
   push:
     branches: main
 
+env:
+  SHA: $(git rev-parse HEAD)
+
 jobs:
   login:
     runs-on: ubuntu-latest
+    
+    - uses: actions/checkout@v3
+
     steps:
       -
         name: Login to Docker Hub
@@ -14,3 +20,25 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - 
+        name: Test
+        run: |-
+          docker build -t sudo1amir/react-test -f ./client/Dockerfile.dev ./client/
+          docker run -e CI=true sudo1amir/react-test npm test
+          
+      - name: Build
+        run: |-
+          docker build -t sudo1amir/multi-client-k8s:latest -t sudo1amir/multi-client-k8s:${{ env.SHA }} -f ./client/Dockerfile ./client
+          docker build -t sudo1amir/multi-server-k8s:latest -t sudo1amir/multi-server-k8s:${{ env.SHA }} -f ./server/Dockerfile ./server
+          docker build -t sudo1amir/multi-worker-k8s:latest -t sudo1amir/multi-worker-k8s:${{ env.SHA }} -f ./worker/Dockerfile ./worker
+
+      - name: Push
+        run: |-
+          docker push sudo1amir/multi-client-k8s:latest
+          docker push sudo1amir/multi-server-k8s:latest
+          docker push sudo1amir/multi-worker-k8s:latest
+
+          docker push sudo1amir/multi-client-k8s:${{ env.SHA }}
+          docker push sudo1amir/multi-server-k8s:${{ env.SHA }}
+          docker push sudo1amir/multi-worker-k8s:${{ env.SHA }}
